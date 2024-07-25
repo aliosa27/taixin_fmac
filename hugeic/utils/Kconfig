@@ -1,0 +1,11 @@
+config HGIC_USB
+	bool "    Support USB interface"
+	depends on USB && (HGICS||HGICF)
+
+config HGIC_SDIO
+	bool "    Support SDIO interface"
+	depends on MMC && (HGICS||HGICF)
+
+config SDIO_REINIT
+	bool "    Support Re-init SDIO interface"
+	depends on HGIC_SDIO

@@ -1,0 +1,11 @@
+drivers/net/wireless/hugeic/hgic_fmac/ctrl.o
+drivers/net/wireless/hugeic/hgic_fmac/core.o
+drivers/net/wireless/hugeic/hgic_fmac/event.o
+drivers/net/wireless/hugeic/hgic_fmac/procfs.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/fwdl.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/utils.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/fwctrl.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/ota.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/fwinfo.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/iwpriv.o
+drivers/net/wireless/hugeic/hgic_fmac/../utils/if_usb.o
