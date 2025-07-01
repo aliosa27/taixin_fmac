@@ -1,0 +1,3 @@
+#this makefile is used to build driver with kernel
+obj-$(CONFIG_HGICS)			+= hgic_smac/
+obj-$(CONFIG_HGICF)			+= hgic_fmac/

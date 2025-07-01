@@ -1,0 +1,2 @@
+config HGICF
+	tristate "   HUGE-IC FullMac WLAN Driver"

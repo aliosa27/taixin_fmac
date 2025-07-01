@@ -1,0 +1,3 @@
+source "drivers/net/wireless/hugeic/hgic_smac/Kconfig"
+source "drivers/net/wireless/hugeic/hgic_fmac/Kconfig"
+source "drivers/net/wireless/hugeic/utils/Kconfig"

@@ -1,0 +1,14 @@
+1. copy driver files to drivers/net/wireless/hugeic.
+
+2. cd drivers/net/wireless/hugeic
+   cp Makefile.in Makefile
+   
+3. modify drivers/net/wireless/Kconfig, add new line:
+		source "drivers/net/wireless/hugeic/Kconfig"
+
+4. modify drivers/net/wireless/Makefile, add new line:
+		obj-$(CONFIG_HGICS)		+= hugeic/
+   or
+		obj-$(CONFIG_HGICF)		+= hugeic/
+
+5. run make menuconfig and select hugeic wifi driver.
