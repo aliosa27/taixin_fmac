@@ -1,5 +1,5 @@
 CURRENT_PATH := $(shell pwd)
-
+LINUX_KERNEL_PATH := /usr/src/linux-headers-6.1.99
 #Hi3516
 #ARCH := arm
 #COMPILER := arm-himix100-linux-
@@ -28,9 +28,9 @@ CURRENT_PATH := $(shell pwd)
 #export STAGING_DIR = $(COMPILER)
 
 #MTK SDK
-ARCH := mips
-COMPILER := /opt/buildroot-gcc463/usr/bin/mipsel-linux-
-LINUX_KERNEL_PATH := $(CURRENT_PATH)/../source/linux-3.10.14.x
+#ARCH := mips
+#COMPILER := /opt/buildroot-gcc463/usr/bin/mipsel-linux-
+#LINUX_KERNEL_PATH := $(CURRENT_PATH)/../source/linux-3.10.14.x
 
 #Raspberry Pi
 #ARCH := arm
@@ -45,13 +45,13 @@ CFLAGS += -DCONFIG_HGIC_2G
 export CONFIG_HGIC_2G = y
 
 #CFLAGS += -DCONFIG_HGIC_STABR
-#export CONFIG_HGIC_STABR = y
+export CONFIG_HGIC_STABR = y
 
 CFLAGS += -DCONFIG_SDIO_REINIT
 
 #主控的DMA对齐要求: 4字节对齐或更多
 #CFLAGS += -DSDIO_DMA_ALIGN=4 -DUSB_DMA_ALIGN=4
-
+ARCH := arm64
 help: 
 	@echo "--------------------------------------------------------------------------------------"
 	@echo "usage:"

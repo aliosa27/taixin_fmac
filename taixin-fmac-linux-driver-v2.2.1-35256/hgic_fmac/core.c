@@ -69,6 +69,8 @@ void dev_queue_xmit(struct sk_buff *skb)
 }
 #endif
 
+static void hgicf_set_mac_address(struct net_device *ndev, const u8 *mac_addr);
+
 static u8 hgicf_match_devid(u16 dev_id)
 {
     int i = 0;
@@ -571,6 +573,35 @@ _CTRLQ_TX:
     //hgic_dbg("Leave\n");
 }
 
+/**static struct hgicf_vif *hgicf_create_iface(struct hgicf_wdev *hg)
+{
+    int ret = 0;
+    struct net_device *ndev = NULL;
+    struct hgicf_vif  *vif  = NULL;
+
+    hgic_dbg("Enter\n");
+    ndev = ALLOC_NETDEV_MQS(sizeof(struct hgicf_vif), ifname, hgicf_netif_setup, 1, 1);
+    if (!ndev) {
+        hgic_err("%s: alloc_netdev_mqs failed\n", __func__);
+        return NULL;
+    }
+
+    vif = (struct hgicf_vif *)netdev_priv(ndev);
+    vif->ndev  = ndev;
+    vif->hg    = hg;
+    vif->opened = 0;
+    ndev->needed_headroom += (hg->bus->drv_tx_headroom + sizeof(struct hgic_frm_hdr2) + 4);
+    memcpy((void *)ndev->dev_addr, hg->fwinfo.mac, ETH_ALEN);
+
+    ret = register_netdev(ndev);
+    if (ret) {
+        free_netdev(ndev);
+        return NULL;
+    }
+
+    return vif;
+}*/
+
 static struct hgicf_vif *hgicf_create_iface(struct hgicf_wdev *hg)
 {
     int ret = 0;
@@ -589,7 +620,8 @@ static struct hgicf_vif *hgicf_create_iface(struct hgicf_wdev *hg)
     vif->hg    = hg;
     vif->opened = 0;
     ndev->needed_headroom += (hg->bus->drv_tx_headroom + sizeof(struct hgic_frm_hdr2) + 4);
-    memcpy(ndev->dev_addr, hg->fwinfo.mac, ETH_ALEN);
+
+    hgicf_set_mac_address(ndev, hg->fwinfo.mac);
 
     ret = register_netdev(ndev);
     if (ret) {
@@ -598,6 +630,27 @@ static struct hgicf_vif *hgicf_create_iface(struct hgicf_wdev *hg)
     }
 
     return vif;
+}
+
+
+static void hgicf_set_mac_address(struct net_device *ndev, const u8 *mac_addr)
+{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 15, 0)
+    /* Modern kernels (5.15+) - use proper API */
+    eth_hw_addr_set(ndev, mac_addr);
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(5, 2, 0)
+    /* Kernels 5.2-5.14 - dev_addr_set was introduced */
+    dev_addr_set(ndev, mac_addr);
+#else
+    /* Older kernels - direct copy with proper assignment type */
+    memcpy(ndev->dev_addr, mac_addr, ETH_ALEN);
+    ndev->addr_assign_type = NET_ADDR_PERM;
+    
+    /* For very old kernels, dunno if this even works! */
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 0, 0)
+    ndev->addr_len = ETH_ALEN;
+#endif
+#endif
 }
 
 static void hgicf_rx_single_frm(struct hgicf_wdev *hg, u8 *data, int len)
@@ -617,11 +670,7 @@ static void hgicf_rx_single_frm(struct hgicf_wdev *hg, u8 *data, int len)
             skb_put(skb, len);
             skb->dev = hg->vif->ndev;
             skb->protocol = eth_type_trans(skb, skb->dev);
-            if (in_interrupt()) {
-                netif_rx(skb);
-            } else {
-                netif_rx_ni(skb);
-            }
+            netif_rx(skb);
         } else {
             hg->vif->stats.rx_dropped += len;
             hgic_err("alloc skb fail, len=%d\r\n", len);

@@ -42,7 +42,7 @@ static int hgicf_status_show(struct seq_file *seq, void *v)
 
 static int hgicf_status_open(struct inode *inode, struct file *file)
 {
-    return single_open(file, hgicf_status_show, PDE_DATA(inode));
+    return single_open(file, hgicf_status_show, pde_data(inode));
 }
 static const struct proc_ops hgicf_pops_status = {
     .proc_open = hgicf_status_open,
@@ -53,7 +53,7 @@ static const struct proc_ops hgicf_pops_status = {
 
 static int hgicf_ota_open(struct inode *inode, struct file *file)
 {
-    return single_open(file, NULL, PDE_DATA(inode));
+    return single_open(file, NULL, pde_data(inode));
 }
 
 static ssize_t hgicf_ota_send_data(struct file *file, const char __user *buffer,
@@ -107,7 +107,7 @@ static int hgicf_iwpriv_show(struct seq_file *seq, void *v)
 
 static int hgicf_iwpriv_open(struct inode *inode, struct file *file)
 {
-    return single_open(file, hgicf_iwpriv_show, PDE_DATA(inode));
+    return single_open(file, hgicf_iwpriv_show, pde_data(inode));
 }
 
 static ssize_t hgicf_iwpriv_write(struct file *file, const char __user *buffer,
@@ -229,7 +229,7 @@ static const struct proc_ops hgicf_pops_iwpriv = {
 
 static int hgicf_fwevent_open(struct inode *inode, struct file *file)
 {
-    return single_open(file, NULL, PDE_DATA(inode));
+    return single_open(file, NULL, pde_data(inode));
 }
 static ssize_t hgicf_fwevent_read(struct file *file, char __user *buffer,
                                   size_t count, loff_t *data)
